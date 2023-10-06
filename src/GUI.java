@@ -1,10 +1,8 @@
 import javax.swing.*;
-import java.math.BigDecimal;
-
 public class GUI extends JFrame {
 
     private StringBuilder numberStr = new StringBuilder("0");
-    private BigDecimal bigNumber = new BigDecimal("0");
+    private double bigNumber = 0;
     private String currentOperation = null;
     private JPanel mainPanel;
     private JLabel numberDisplay;
@@ -43,7 +41,6 @@ public class GUI extends JFrame {
         setResizable(false);
         updateDisplayNumber();
     }
-
     private void checkNumberStringZero() {
         if (numberStr.toString().equals("0")) {
             numberStr = new StringBuilder();
@@ -55,7 +52,7 @@ public class GUI extends JFrame {
     }
 
     private void displayBigNumber() {
-        numberDisplay.setText(bigNumber.toString());
+        numberDisplay.setText(String.valueOf(bigNumber));
     }
 
     private void clearDisplayNumber() {
@@ -69,7 +66,7 @@ public class GUI extends JFrame {
     private void clearAll() {
         clearNumberString();
         clearDisplayNumber();
-        bigNumber = new BigDecimal("0");
+        bigNumber = 0;
         currentOperation = null;
     }
 
@@ -90,6 +87,7 @@ public class GUI extends JFrame {
 
         CEButton.addActionListener(e -> {
             clearNumberString();
+            clearDisplayNumber();
         });
 
         dotButton.addActionListener(e -> {
@@ -183,26 +181,26 @@ public class GUI extends JFrame {
     private void performOperation(String operation) {
         if (currentOperation == null) {
             // If no previous operation, set bigNumber to the current number
-            bigNumber = new BigDecimal(numberStr.toString());
+            bigNumber = Double.parseDouble(numberStr.toString());
         } else {
-            BigDecimal currentBigDecimal = new BigDecimal(numberStr.toString());
+            double currentBigDecimal = Double.parseDouble(numberStr.toString());
             switch (currentOperation) {
                 case "+":
-                    bigNumber = bigNumber.add(currentBigDecimal);
+                    bigNumber = bigNumber + currentBigDecimal;
                     break;
                 case "-":
-                    bigNumber = bigNumber.subtract(currentBigDecimal);
+                    bigNumber = bigNumber - currentBigDecimal;
                     break;
                 case "/":
-                    if (currentBigDecimal.equals(BigDecimal.ZERO)) {
+                    if (currentBigDecimal == 0) {
                         // Handle division by zero
                         numberDisplay.setText("Error");
                         return;
                     }
-                    bigNumber = bigNumber.divide(currentBigDecimal, BigDecimal.ROUND_HALF_UP);
+                    bigNumber = bigNumber / currentBigDecimal;
                     break;
                 case "*":
-                    bigNumber = bigNumber.multiply(currentBigDecimal);
+                    bigNumber = bigNumber * currentBigDecimal;
                     break;
             }
         }
